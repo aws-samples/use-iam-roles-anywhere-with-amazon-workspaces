@@ -31,13 +31,13 @@ $script:TrustAnchorARN = "<REPLACE WITH TRUST ANCHOR ARN>"
 
 2. The script needs to be run with elevated permission (Run as administrator) to allow setting the NTFS permission on the folder and the private key.
 3. The IAM profile name configured in the ~/.aws/config file is iamrolesanywhere
-4. The script doesn’t overwrite the existing configuration in the ~/.aws/config file which customer may have already configured. It adds the named profile section (https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html#cli-configure-files-format-profile) in the config file, replacing the variable with the actual value.
+4. The script doesn’t overwrite the existing configuration in the ~/.aws/config file which customer may have already configured. It adds the [named profile section]([url](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html#cli-configure-files-format-profile)) in the config file, replacing the variable with the actual value.
 
 [profile iamrolesanywhere]
 credential_process = $script:awsSigningHelperPath credential-process --certificate $script:PemCert --private-key $script:PemCert --profile-arn $script:ProfileARN --role-arn $script:RoleARN --trust-anchor-arn $script:TrustAnchorARN
 
 5. Every time the script is run, the Set-AWSConfig function in the script runs a regex to replaces the above configuration in the ~/.aws/config file.
-6. When running the command using AWS CLI or using AWS SDK please use the profile parameter to run the command or code. For example:
+6. When running the command using [AWS CLI]([url](https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html#cli-configure-files-using-profiles)) or using [AWS SDK]([url](https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/credentials-profiles.html)) please use the profile parameter to run the command or code. For example:
 
 aws ec2 describe-instances —profile iamrolesanywhere
 
