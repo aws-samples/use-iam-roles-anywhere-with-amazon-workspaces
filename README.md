@@ -5,6 +5,9 @@ Amazon WorkSpaces Personal provides a secure, persistent desktop computing envir
 This repository contains the PowerShell script for AWS Desktop and Application Streaming blog 'Accessing AWS resources from Amazon WorkSpaces using IAM Roles Anywhere'.
 Please refer to the blog article for guidance on deploying the solution.
 
+![image(1)](https://github.com/user-attachments/assets/c93923b7-1985-4d02-b47b-8247daadf098)
+
+
 Once you have deployed the solution, you can run the PowerShell script provided in this repository to automate the credential configuration on the WorkSpaces.
 
 This script performs the following tasks:
@@ -28,7 +31,7 @@ $script:TrustAnchorARN = "<REPLACE WITH TRUST ANCHOR ARN>"
 
 2. The script needs to be run with elevated permission (Run as administrator) to allow setting the NTFS permission on the folder and the private key.
 3. The IAM profile name configured in the ~/.aws/config file is iamrolesanywhere
-4. The script doesn’t overwrite the existing configuration in the ~/.aws/config file which customer may have already configured. It adds the named profile section in the config file, replacing the variable with the actual value.
+4. The script doesn’t overwrite the existing configuration in the ~/.aws/config file which customer may have already configured. It adds the named profile section (https://docs.aws.amazon.com/cli/v1/userguide/cli-configure-files.html#cli-configure-files-format-profile) in the config file, replacing the variable with the actual value.
 
 [profile iamrolesanywhere]
 credential_process = $script:awsSigningHelperPath credential-process --certificate $script:PemCert --private-key $script:PemCert --profile-arn $script:ProfileARN --role-arn $script:RoleARN --trust-anchor-arn $script:TrustAnchorARN
