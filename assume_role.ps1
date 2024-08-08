@@ -15,20 +15,42 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 <#
-.SYNOPSIS
-This script configures .aws\config file with custom configuration.
+ .SYNOPSIS
+    This script configures .aws\config file with custom configuration.
 
-.DESCRIPTION
-This script performs the following tasks:
-1. Defines a log function to write logs to a file named IAMRolesAnywhereScript.log in path $env:USERPROFILE.
-2. Create a folder named UserCertificate in $env:USERPROFILE. Disables inheritence and set the NTFS permission for the current WorkSpace user.
-2. Checks for existing .pfx and .pem certificates in the specified path and deletes them if present.
-3. Exports the user's code-signing certificate to a .pfx file named pfxcertificate.pfx in the specified directory.
-4. Converts the exported .pfx certificate to a .pem file named pemcertificate.pem in the specified directory.
-5. Checks if the aws_signing_helper.exe tool is present in the specified awsSigningHelper path. If not, it downloads the tool from the provided URL.
-6. Set the NTFS permission on private key for current user and disable inheritence on private key to secure the private key.
-7. Generates the configuration for ~/.aws/config/ file
+ .DESCRIPTION
+    This script performs the following tasks:
+    1. Defines a Log function to write logs to a file named IAMRolesAnywhereScript.log in path $env:USERPROFILE.
+    2. Create a folder named UserCertificate in $env:USERPROFILE. Disables inheritence and set the permission for the current user.
+    3. Checks for existing .pfx and .pem certificates in the specified path and deletes them if present.
+    4. Exports the user's code-signing certificate to a .pfx file named pfxcertificate.pfx in the specified directory.
+    5. Converts the exported .pfx certificate to a .pem file named pemcertificate.pem in the specified directory.
+    6. Checks if the aws_signing_helper.exe tool is present in the specified awsSigningHelper path. If not, it downloads the tool from the provided URL.
+    7. Generates the configuration for ~/.aws/config/ file
+    8. Set the permission on private key for current user and disable inheritence on private key to secure the private key.
+
+ .PARAMETER ProfileARN
+    This required parameter is a string value for the the ARN of the Profile to pull the policies from.
+
+ .PARAMETER RoleARN
+    This required parameter is a string value for the ARN of the target role to assume.
+
+ .PARAMETER TrustAnchorARN
+    This required parameter is a string value for the ARN of the Trust anchor to use for authentication.
+
+ .EXAMPLE
+    assume-role.ps1  -ProfileARN "Profile ARN" -RoleARN "Role ARN" -TrustAnchorARN <Trust Anchor ARN>
 #>
+
+    [CmdletBinding()]
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$ProfileARN,
+        [Parameter(Mandatory=$true)]
+        [string]$RoleARN,
+        [Parameter(Mandatory=$true)]
+        [string]$TrustAnchorARN
+    )
 
 # Set Variables
 
@@ -38,9 +60,6 @@ $script:PfxCert = $null
 $script:PemCert = $null
 $script:awsSigningHelperPath = $null
 $script:FolderName = "UserCertificate"
-$script:ProfileARN = "<REPLACE WITH PROFILE ARN>"
-$script:RoleARN = "<REPLACE WITH IAM ROLE ARN>"
-$script:TrustAnchorARN = "<REPLACE WITH TRUST ANCHOR ARN>"
 
 function Set-DirectoryPath {
 <#
@@ -198,7 +217,7 @@ function Export-UserCertificate {
 
         if ($PFXcertificate) {
             # Prompt the user for a password to protect the PFX file
-            $script:PFXPassword = Read-Host -Prompt "Enter a password to protect the private key" -AsSecureString
+            $script:PFXPassword = Read-Host -Prompt "Enter a password to protect the PFX file" -AsSecureString
 
             # Export the certificate to a PFX file
             $PFXcertificate | Export-PfxCertificate -FilePath $script:PfxCert -Password $script:PFXPassword
@@ -299,7 +318,7 @@ function Set-AWSConfig {
     Get-STSCallerIdentity -ProfileName iamrolesanywhere
 
     You can specify a profile name of your own. For example: [profile WorkSpacesIAMRole]. Do not remove the 'profile' word before the actual profile name.
-    Make sure to replace the regex pattern in line 331 depending on the profile name you provide.
+    Make sure to replace the regex pattern in line 350 depending the profile name you provide.
 #>
     [CmdletBinding(SupportsShouldProcess)]
     param()
@@ -319,7 +338,7 @@ function Set-AWSConfig {
     # Define the content of the config file
     $configContent = @"
 [profile iamrolesanywhere]
-credential_process = $script:awsSigningHelperPath credential-process --certificate $script:PemCert --private-key $script:PemCert --profile-arn $script:ProfileARN --role-arn $script:RoleARN --trust-anchor-arn $script:TrustAnchorARN
+credential_process = $script:awsSigningHelperPath credential-process --certificate $script:PemCert --private-key $script:PemCert --profile-arn $ProfileARN --role-arn $RoleARN --trust-anchor-arn $TrustAnchorARN
 "@
 
     # Check if the config file exists
