@@ -16,7 +16,7 @@
 
 <#
  .SYNOPSIS
-    This script configures .aws\config file with custom configuration.
+    This script configures "%userprofile%\.aws\config" file with custom configuration.
 
  .DESCRIPTION
     This script performs the following tasks:
@@ -26,7 +26,7 @@
     4. Exports the user's code-signing certificate to a .pfx file named pfxcertificate.pfx in the specified directory.
     5. Converts the exported .pfx certificate to a .pem file named pemcertificate.pem in the specified directory.
     6. Checks if the aws_signing_helper.exe tool is present in the specified awsSigningHelper path. If not, it downloads the tool from the provided URL.
-    7. Generates the configuration for ~/.aws/config/ file
+    7. Generates the configuration for "%userprofile%\.aws\config" file
     8. Set the permission on private key for current user and disable inheritence on private key to secure the private key.
 
  .PARAMETER ProfileARN
@@ -39,7 +39,7 @@
     This required parameter is a string value for the ARN of the Trust anchor to use for authentication.
 
  .EXAMPLE
-    assume-role.ps1  -ProfileARN "Profile ARN" -RoleARN "Role ARN" -TrustAnchorARN <Trust Anchor ARN>
+    assume-role.ps1  -ProfileARN "<Profile ARN>" -RoleARN "<Role ARN>" -TrustAnchorARN "<Trust Anchor ARN>"
 #>
 
     [CmdletBinding()]
@@ -309,9 +309,9 @@ function Get-AWSSigningHelperTool {
 function Set-AWSConfig {
 <#
  .SYNOPSIS
-    Function to configure ~/.aws/config file. 
+    Function to configure "%userprofile%\.aws\config" file. 
  .DESCRIPTION
-    The function defines the content of the config file and will append the content in the existing config file.
+    The function defines the content of the "%userprofile%\.aws\config" file and will append the content in the existing config file.
     When making AWS API calls make sure to use the --profile parameter and specify the argument as iamrolesanywhere.
     Example:     
     aws sts get-caller-identity --profile iamrolesanywhere
