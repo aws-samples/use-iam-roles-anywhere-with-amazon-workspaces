@@ -2,8 +2,7 @@ Use AWS IAM Roles Anywhere with Amazon WorkSpaces
 
 [Amazon WorkSpaces Personal](https://aws.amazon.com/workspaces-family/workspaces/) provides a secure, persistent desktop computing environment in the cloud. However, natively, WorkSpaces does not support assuming IAM roles like EC2 instances. This can make it challenging to securely access AWS resources and services from within WorkSpaces while adhering to the principle of least privilege. Customers often ask if there is a method to configure WorkSpaces to use IAM Roles to issue temporary credentials. In this blog, we explain how you can configure WorkSpaces to use AWS IAM Roles Anywhere to obtain temporary security credentials.
 
-This repository contains the PowerShell script for AWS Desktop and Application Streaming blog <Blog Name and Link>
-Please refer to the blog article for guidance on deploying the solution.
+This repository contains the PowerShell script for AWS Desktop and Application Streaming blog ['Accessing AWS resources using AWS IAM Roles Anywhere from Amazon WorkSpaces'](https://aws.amazon.com/blogs/desktop-and-application-streaming/accessing-aws-resources-from-amazon-workspaces-using-aws-iam-roles-anywhere/). Please refer to the blog article for guidance on deploying the solution.
 
 
 ![image(1)](https://github.com/user-attachments/assets/c93923b7-1985-4d02-b47b-8247daadf098)
